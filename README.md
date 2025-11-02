@@ -1,36 +1,69 @@
-# Book Management App
+# @npmcli/move-file
 
-Simple web app to manage books with SQLite database.
+A fork of [move-file](https://github.com/sindresorhus/move-file) with
+compatibility with all node 10.x versions.
 
-## Database Schema
-```sql
-CREATE TABLE Book (
-    book_id INTEGER PRIMARY KEY,
-    title TEXT,
-    author TEXT,
-    price REAL
-)
+> Move a file (or directory)
+
+The built-in
+[`fs.rename()`](https://nodejs.org/api/fs.html#fs_fs_rename_oldpath_newpath_callback)
+is just a JavaScript wrapper for the C `rename(2)` function, which doesn't
+support moving files across partitions or devices. This module is what you
+would have expected `fs.rename()` to be.
+
+## Highlights
+
+- Promise API.
+- Supports moving a file across partitions and devices.
+- Optionally prevent overwriting an existing file.
+- Creates non-existent destination directories for you.
+- Support for Node versions that lack built-in recursive `fs.mkdir()`
+- Automatically recurses when source is a directory.
+
+## Install
+
+```
+$ npm install @npmcli/move-file
 ```
 
-## API Endpoints
-- **GET /books** - Get all books
-- **POST /books** - Add new book
+## Usage
 
-## Setup & Run
+```js
+const moveFile = require('@npmcli/move-file');
 
-1. Install dependencies:
-```bash
-npm install
+(async () => {
+	await moveFile('source/unicorn.png', 'destination/unicorn.png');
+	console.log('The file has been moved');
+})();
 ```
 
-2. Start server:
-```bash
-npm start
-```
+## API
 
-3. Open browser: http://localhost:3000
+### moveFile(source, destination, options?)
 
-## Files
-- `server.js` - Backend API
-- `public/index.html` - Frontend UI
-- `package.json` - Dependencies
+Returns a `Promise` that resolves when the file has been moved.
+
+### moveFile.sync(source, destination, options?)
+
+#### source
+
+Type: `string`
+
+File, or directory, you want to move.
+
+#### destination
+
+Type: `string`
+
+Where you want the file or directory moved.
+
+#### options
+
+Type: `object`
+
+##### overwrite
+
+Type: `boolean`\
+Default: `true`
+
+Overwrite existing destination file(s).
